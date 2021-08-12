@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'rest_framework',
     'django_filters',
-    'content',
+    'reviews',
     'api',
 ]
 

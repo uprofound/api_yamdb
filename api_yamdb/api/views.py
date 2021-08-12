@@ -1,7 +1,7 @@
 from django_filters import rest_framework
 from rest_framework import filters, mixins, viewsets
 
-from content.models import Category, Genre, Title
+from reviews.models import Category, Genre, Title
 
 from .filters import TitleFilter
 from .permissions import IsAdmin, IsReadOnly
