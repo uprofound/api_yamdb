@@ -20,7 +20,7 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=256, unique=True)
+    name = models.CharField(max_length=256)
     description = models.TextField(blank=True)
     category = models.ForeignKey(
         Category,
@@ -39,3 +39,11 @@ class Title(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'year'],
+                name='unique_name_year'
+            )
+        ]
