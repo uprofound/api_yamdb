@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
@@ -50,9 +51,7 @@ def send_code(request):
     username = serializer.data.get('username')
     if username == 'me':
         return Response(status=status.HTTP_400_BAD_REQUEST)
-    if User.objects.filter(email=email).exists():
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-    if User.objects.filter(username=username).exists():
+    if User.objects.filter(Q(email=email) | Q(username=username)).exists():
         return Response(status=status.HTTP_400_BAD_REQUEST)
     user, created = User.objects.get_or_create(
         email=email,
