@@ -16,9 +16,16 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
 
-class EmailSerializer(serializers.Serializer):
+class EmailSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     username = serializers.CharField()
+
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'username',
+        )
 
 
 class UserCodeSerializer(serializers.Serializer):
