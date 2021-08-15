@@ -1,15 +1,14 @@
 from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
-# from rest_framework.routers import DefaultRouter
+from .views import UserViewSet, get_token, send_code
 
-from .views import APISignup
+router = DefaultRouter()
 
-# router = DefaultRouter()
-# router.register('auth/signup/', APISignup.as_view(), basename='signup')
+router.register('users', UserViewSet, basename='Users')
 
 urlpatterns = [
-    path('v1/auth/signup/', APISignup.as_view()),
-    path('v1/auth/', include('djoser.urls')),
-    path('v1/auth/', include('djoser.urls.jwt')),
+    path('v1/auth/signup/', send_code, name='register'),
+    path('v1/auth/token/', get_token, name='get_token'),
+    path('v1/', include(router.urls)),
 ]
-
