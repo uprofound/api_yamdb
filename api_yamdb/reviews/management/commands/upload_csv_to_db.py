@@ -15,7 +15,7 @@ class Command(BaseCommand):
         'titles': 'reviews_title',
         'genre_title': 'reviews_title_genre',
         'review': 'reviews_review',
-        'comments': 'reviews_comments',
+        'comments': 'reviews_comment',
     }
 
     def add_arguments(self, parser):
