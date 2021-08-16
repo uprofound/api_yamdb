@@ -60,4 +60,21 @@ python3 manage.py runserver
 
 Для администрирования проекта и создания категорий, жанров и т.д. используется суперпользователь. Для его создания выполните команду:
 
-    python manage.py createsuperuser
+```bash
+python3 manage.py createsuperuser
+```
+
+### Импорт данных
+
+В проекте есть возможность загружать данные из csv-файлов в директории api_yamdb/static/data.  
+Для загрузки в БД данных из файла filename.csv выполните команду:
+
+```bash
+python3 manage.py import filename
+```
+
+Для загрузки в БД данных из всех файлов сразу выполните команду:
+
+```bash
+python3 manage.py import all
+```
