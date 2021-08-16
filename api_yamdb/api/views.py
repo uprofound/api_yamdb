@@ -9,6 +9,8 @@ from .permissions import IsAdmin, IsAuthor, IsModerator, IsReadOnly
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer, TitleSerializer)
 
+from django.db.models import Avg
+
 
 class MixinsViewSet(mixins.DestroyModelMixin,
                     mixins.ListModelMixin,
@@ -31,7 +33,7 @@ class CategoryViewSet(MixinsViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.all()
+    queryset = Title.objects.all().annotate(rating=Avg('reviews__score'))
     serializer_class = TitleSerializer
     permission_classes = (IsAdmin | IsReadOnly,)
     filter_backends = [rest_framework.DjangoFilterBackend]

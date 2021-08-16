@@ -39,16 +39,21 @@ class TitleSerializer(serializers.ModelSerializer):
         slug_field='slug',
         queryset=Category.objects.all()
     )
-    # rating = serializers.IntegerField(
-    #     min_value=1,
-    #     max_value=10
-    # ).to_representation(
-    #     int(Review.objects.filter(title='id').aggregate(Avg('score')).get('score__avg'))
-    # )
+    rating = serializers.IntegerField(
+        read_only=True,
+        required=False,
+        min_value=1,
+        max_value=10
+    )
 
     class Meta:
         fields = '__all__'
         model = Title
+
+    # def get_rating(self, obj):
+    #     if Title.objects.all().annotate(rating=Avg('reviews__score')).get('reviews__score__avg') is None:
+    #         return 0
+    #     return Title.objects.all().annotate(rating=Avg('reviews__score')).get('reviews__score__avg')
 
 
 class ReviewSerializer(serializers.ModelSerializer):
