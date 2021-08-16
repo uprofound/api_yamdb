@@ -6,6 +6,7 @@ from .validators import year_validator
 
 User = get_user_model()
 
+
 class Category(models.Model):
     name = models.CharField(max_length=256)
     slug = models.SlugField(max_length=50, unique=True)
@@ -23,7 +24,7 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=256, unique=True)
+    name = models.CharField(max_length=256)
     description = models.TextField(blank=True)
     category = models.ForeignKey(
         Category,
@@ -43,6 +44,14 @@ class Title(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'year'],
+                name='unique_name_year'
+            )
+        ]
+
 
 class Review(models.Model):
     title = models.ForeignKey(
@@ -55,7 +64,6 @@ class Review(models.Model):
         verbose_name='Score'
     )
     pub_date = models.DateTimeField('Date published', auto_now_add=True)
-
 
     class Meta:
         ordering = ['-pub_date']
@@ -77,7 +85,6 @@ class Comment(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='comments')
     pub_date = models.DateTimeField('Date published', auto_now_add=True)
-
 
     class Meta:
         ordering = ['-pub_date']
