@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
-from reviews.models import Category, Comment, Genre, Review, Title
 
-from django.db.models import Avg
+from reviews.models import (Category, Comment, Genre, Review,  # isort:skip
+                            Title)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -49,11 +49,6 @@ class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Title
-
-    # def get_rating(self, obj):
-    #     if Title.objects.all().annotate(rating=Avg('reviews__score')).get('reviews__score__avg') is None:
-    #         return 0
-    #     return Title.objects.all().annotate(rating=Avg('reviews__score')).get('reviews__score__avg')
 
 
 class ReviewSerializer(serializers.ModelSerializer):

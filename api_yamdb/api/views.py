@@ -1,15 +1,16 @@
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework
 from rest_framework import filters, mixins, viewsets
 from rest_framework.exceptions import ValidationError
-from reviews.models import Category, Comment, Genre, Review, Title
 
 from .filters import TitleFilter
 from .permissions import IsAdmin, IsAuthor, IsModerator, IsReadOnly
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer, TitleSerializer)
 
-from django.db.models import Avg
+from reviews.models import (Category, Comment, Genre, Review,  # isort:skip
+                            Title)
 
 
 class MixinsViewSet(mixins.DestroyModelMixin,
@@ -41,7 +42,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    serializer_class = ReviewSerializer    
+    serializer_class = ReviewSerializer
     permission_classes = (IsAuthor | IsModerator | IsAdmin | IsReadOnly,)
 
     def get_queryset(self):
@@ -58,12 +59,14 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    serializer_class = CommentSerializer    
+    serializer_class = CommentSerializer
     permission_classes = (IsAuthor | IsModerator | IsAdmin | IsReadOnly,)
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        review = get_object_or_404(Review, title=title, id=self.kwargs.get('review_id'))
+        review = get_object_or_404(
+            Review, title=title, id=self.kwargs.get('review_id')
+        )
         return Comment.objects.filter(review=review)
 
     def perform_create(self, serializer):

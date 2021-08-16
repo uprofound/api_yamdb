@@ -2,14 +2,16 @@ import csv
 import os
 
 from django.core.management.base import BaseCommand
-from reviews.models import Category, Comment, Genre, Review, Title
-from users.models import User
+
+from reviews.models import (Category, Comment, Genre, Review,  # isort:skip
+                            Title)
+from users.models import User  # isort:skip
 
 
 class Command(BaseCommand):
     help = 'Command to import data from csv-files into database.'
     DATA_DIR = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "../../../static/data/"))
+        os.path.join(os.path.dirname(__file__), '../../../static/data/'))
 
     FILE_NAMES = [
         'users',
@@ -20,21 +22,21 @@ class Command(BaseCommand):
         'review',
         'comments',
     ]
-    
+
     def add_arguments(self, parser):
         parser.add_argument('filename', type=str, help='specific filename '
                             'or "all" to import all files at once')
 
     def create_users_object(self, row):
         User.objects.create(
-                    pk=row['id'],
-                    username=row['username'],
-                    email=row['email'],
-                    role=row['role'],
-                    bio=row['bio'],
-                    first_name=row['first_name'],
-                    last_name=row['last_name'],
-                )
+            pk=row['id'],
+            username=row['username'],
+            email=row['email'],
+            role=row['role'],
+            bio=row['bio'],
+            first_name=row['first_name'],
+            last_name=row['last_name'],
+        )
 
     def create_category_object(self, row):
         Category.objects.create(
@@ -86,15 +88,17 @@ class Command(BaseCommand):
 
     def import_file(self, file_name):
         try:
-            with open(Command.DATA_DIR + f"\\{file_name}.csv", encoding="utf-8",
-                      newline="") as f:
+            with open(Command.DATA_DIR + f'\\{file_name}.csv',
+                      encoding='utf-8', newline='') as f:
                 reader = csv.DictReader(f)
                 for row in reader:
                     self.__getattribute__(f'create_{file_name}_object')(row)
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'Error to import: {e}'))
         else:
-            self.stdout.write(self.style.SUCCESS(f'Data from {file_name} imported to db!'))
+            self.stdout.write(self.style.SUCCESS(
+                f'Data from {file_name} imported to db!'
+            ))
 
     def handle(self, *args, **kwargs):
         filename = kwargs['filename']
@@ -104,4 +108,3 @@ class Command(BaseCommand):
                 self.import_file(file_name)
         else:
             self.import_file(filename)
- 

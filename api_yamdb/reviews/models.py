@@ -38,7 +38,7 @@ class Title(models.Model):
     )
     year = models.PositiveSmallIntegerField(
         validators=[year_validator],
-        verbose_name="Year"
+        verbose_name='Year'
     )
 
     def __str__(self):
