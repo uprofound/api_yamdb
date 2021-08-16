@@ -2,6 +2,8 @@ from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 from reviews.models import Category, Comment, Genre, Review, Title
 
+from django.db.models import Avg
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,7 +39,12 @@ class TitleSerializer(serializers.ModelSerializer):
         slug_field='slug',
         queryset=Category.objects.all()
     )
-    # rating = serializers.IntegerField(min_value=1, max_value=10)
+    # rating = serializers.IntegerField(
+    #     min_value=1,
+    #     max_value=10
+    # ).to_representation(
+    #     int(Review.objects.filter(title='id').aggregate(Avg('score')).get('score__avg'))
+    # )
 
     class Meta:
         fields = '__all__'
