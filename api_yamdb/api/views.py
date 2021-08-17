@@ -2,7 +2,6 @@ from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework
 from rest_framework import viewsets
-from rest_framework.exceptions import ValidationError
 
 from .filters import TitleFilter
 from .mixins import MixinsViewSet
@@ -43,14 +42,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        return Review.objects.filter(title=title)
+        return title.reviews.all()
 
     def perform_create(self, serializer):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        if Review.objects.filter(
-            author=self.request.user, title=title
-        ).exists():
-            raise ValidationError('TODO')
         serializer.save(author=self.request.user, title=title)
 
 
