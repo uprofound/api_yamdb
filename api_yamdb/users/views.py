@@ -35,7 +35,7 @@ class UserViewSet(viewsets.ModelViewSet):
             request.data,
             partial=True
         )
-        user = get_object_or_404(User, username=request.user.username)
+        user = request.user
         serializer.is_valid(raise_exception=True)
         serializer.save(role=user.role)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -44,11 +44,11 @@ class UserViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def send_code(request):
-    """Validate username, email and send confirmation code to email."""
+    '''Validate username, email and send confirmation code to email.'''
     serializer = EmailSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    email = serializer.data.get('email')
-    username = serializer.data.get('username')
+    email = serializer.validated_data.get('email')
+    username = serializer.validated_data.get('username')
     if username == 'me':
         return Response(status=status.HTTP_400_BAD_REQUEST)
     if User.objects.filter(Q(email=email) | Q(username=username)).exists():
@@ -69,11 +69,11 @@ def send_code(request):
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def get_token(request):
-    """Validate username, confirmation code and return token."""
+    '''Validate username, confirmation code and return token.'''
     serializer = UserCodeSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    username = serializer.data.get('username')
-    confirmation_code = serializer.data.get('confirmation_code')
+    username = serializer.validated_data.get('username')
+    confirmation_code = serializer.validated_data.get('confirmation_code')
     user = get_object_or_404(User, username=username)
     if PasswordResetTokenGenerator().check_token(user, confirmation_code):
         token = AccessToken.for_user(user)
