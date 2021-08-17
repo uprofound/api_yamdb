@@ -1,26 +1,18 @@
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework
-from rest_framework import filters, mixins, viewsets
+from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
 
 from .filters import TitleFilter
+from .mixins import MixinsViewSet
 from .permissions import IsAdmin, IsAuthor, IsModerator, IsReadOnly
 from .serializers import (CategorySerializer, CommentSerializer,
-                          GenreSerializer, ReviewSerializer, TitleSerializer)
+                          GenreSerializer, ReviewSerializer,
+                          TitleReadSerializer, TitleWriteSerializer)
 
 from reviews.models import (Category, Comment, Genre, Review,  # isort:skip
                             Title)
-
-
-class MixinsViewSet(mixins.DestroyModelMixin,
-                    mixins.ListModelMixin,
-                    mixins.CreateModelMixin,
-                    viewsets.GenericViewSet):
-    filter_backends = [filters.SearchFilter]
-    permission_classes = (IsAdmin | IsReadOnly,)
-    search_fields = ('name', 'slug')
-    lookup_field = 'slug'
 
 
 class GenreViewSet(MixinsViewSet):
@@ -35,10 +27,14 @@ class CategoryViewSet(MixinsViewSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all().annotate(rating=Avg('reviews__score'))
-    serializer_class = TitleSerializer
     permission_classes = (IsAdmin | IsReadOnly,)
     filter_backends = [rest_framework.DjangoFilterBackend]
     filterset_class = TitleFilter
+
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return TitleReadSerializer
+        return TitleWriteSerializer
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
