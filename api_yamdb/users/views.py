@@ -44,7 +44,7 @@ class UserViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def send_code(request):
-    '''Validate username, email and send confirmation code to email.'''
+    """Validate username, email and send confirmation code to email."""
     serializer = EmailSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     email = serializer.validated_data.get('email')
@@ -69,7 +69,7 @@ def send_code(request):
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def get_token(request):
-    '''Validate username, confirmation code and return token.'''
+    """Validate username, confirmation code and return token."""
     serializer = UserCodeSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     username = serializer.validated_data.get('username')
