@@ -50,11 +50,6 @@ class TitleSerializer(serializers.ModelSerializer):
         fields = '__all__'
         model = Title
 
-    # def get_rating(self, obj):
-    #     if Title.objects.all().annotate(rating=Avg('reviews__score')).get('reviews__score__avg') is None:
-    #         return 0
-    #     return Title.objects.all().annotate(rating=Avg('reviews__score')).get('reviews__score__avg')
-
 
 class ReviewSerializer(serializers.ModelSerializer):
     title = serializers.PrimaryKeyRelatedField(read_only=True)
