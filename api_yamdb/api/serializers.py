@@ -59,6 +59,17 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = '__all__'
 
+    def validate(self, data):
+        if self.context['request'].method == 'POST':
+            title_id = self.context['view'].kwargs.get('title_id')
+            if Review.objects.filter(
+                author=self.context['request'].user, title_id=title_id
+            ).exists():
+                raise serializers.ValidationError(
+                    'User can leave only one review for a title.'
+                )
+        return data
+
 
 class CommentSerializer(serializers.ModelSerializer):
     review = serializers.PrimaryKeyRelatedField(read_only=True)
