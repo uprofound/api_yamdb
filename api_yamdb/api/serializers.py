@@ -11,34 +11,15 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
 
 
-class CategoryField(serializers.SlugRelatedField):
-
-    def to_representation(self, value):
-        return CategorySerializer(value).data
-
-
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         exclude = ('id',)
         model = Genre
 
 
-class GenreField(serializers.SlugRelatedField):
-
-    def to_representation(self, value):
-        return GenreSerializer(value).data
-
-
 class TitleReadSerializer(serializers.ModelSerializer):
-    genre = GenreField(
-        many=True,
-        slug_field='slug',
-        queryset=Genre.objects.all()
-    )
-    category = CategoryField(
-        slug_field='slug',
-        queryset=Category.objects.all()
-    )
+    genre = GenreSerializer(many=True, read_only=True)
+    category = CategorySerializer(read_only=True)
     rating = serializers.IntegerField(
         read_only=True,
         required=False,
@@ -52,12 +33,11 @@ class TitleReadSerializer(serializers.ModelSerializer):
 
 
 class TitleWriteSerializer(serializers.ModelSerializer):
-    genre = GenreField(
-        many=True,
+    genre = SlugRelatedField(
         slug_field='slug',
-        queryset=Genre.objects.all()
+        many=True, queryset=Genre.objects.all()
     )
-    category = CategoryField(
+    category = SlugRelatedField(
         slug_field='slug',
         queryset=Category.objects.all()
     )
